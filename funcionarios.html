@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Funcionários - Sistema RH Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+</head>
+<body style="margin: 0; font-family: Arial;">
+    <div style="background: #3b82f6; color: white; padding: 20px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="margin: 0;">👥 Funcionários</h1>
+                <p style="margin: 5px 0;">Gestão de funcionários da empresa</p>
+            </div>
+            <button onclick="window.location.href='/'" 
+                    style="background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 8px 15px; border-radius: 6px; cursor: pointer;">
+                ← Voltar ao Dashboard
+            </button>
+        </div>
+    </div>
+
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <div style="margin-bottom: 20px;">
+            <button onclick="carregarFuncionarios()" 
+                    style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-right: 10px;">
+                🔄 Carregar Funcionários
+            </button>
+            <button onclick="mostrarFormulario()" 
+                    style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-right: 10px;">
+                ➕ Novo Funcionário
+            </button>
+            <button onclick="debug()" 
+                    style="background: #f59e0b; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                🔍 Debug
+            </button>
+        </div>
+
+        <!-- Formulário de cadastro -->
+        <div id="formulario" style="display: none; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <h3 style="margin-top: 0;">Cadastrar Novo Funcionário</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <input type="text" id="nome" placeholder="Nome completo" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                <input type="email" id="email" placeholder="Email" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                <input type="text" id="codigo" placeholder="Código do funcionário" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                <input type="date" id="dataAdmissao" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                <input type="text" id="cargo" placeholder="Cargo/Posição" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                <input type="tel" id="telefone" placeholder="Telefone" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+            </div>
+            <div style="margin-top: 15px;">
+                <button onclick="cadastrarFuncionario()" 
+                        style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-right: 10px;">
+                    ✅ Cadastrar
+                </button>
+                <button onclick="document.getElementById('formulario').style.display='none'" 
+                        style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de funcionários -->
+        <div id="funcionarios" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+            <div style="background: #f3f4f6; border-radius: 8px; padding: 40px; text-align: center;">
+                <p style="color: #6b7280;">🔄 Carregando funcionários automaticamente...</p>
+            </div>
+        </div>
+
+        <div id="status" style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 6px; display: none;">
+            <h4 style="margin: 0 0 10px 0;">Status:</h4>
+            <div id="statusTexto"></div>
+        </div>
+    </div>
+
+    <script>
+        console.log('✅ Página de funcionários carregada!');
+
+        function mostrarStatus(texto, tipo = 'info') {
+            const status = document.getElementById('status');
+            const statusTexto = document.getElementById('statusTexto');
+            
+            status.style.display = 'block';
+            statusTexto.textContent = texto;
+            
+            if (tipo === 'sucesso') {
+                status.style.background = '#d1fae5';
+                status.style.color = '#065f46';
+            } else if (tipo === 'erro') {
+                status.style.background = '#fef2f2';
+                status.style.color = '#991b1b';
+            } else {
+                status.style.background = '#f3f4f6';
+                status.style.color = '#374151';
+            }
+        }
+
+        function mostrarFormulario() {
+            document.getElementById('formulario').style.display = 'block';
+        }
+
+        async function carregarFuncionarios() {
+            const container = document.getElementById('funcionarios');
+            
+            try {
+                mostrarStatus('Carregando funcionários...', 'info');
+                
+                const response = await fetch('/api/employees');
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // Limpa o container
+                    container.innerHTML = '';
+                    
+                    // Garante que o container está visível
+                    container.style.cssText = `
+                        display: grid !important;
+                        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+                        gap: 20px !important;
+                        padding: 20px !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        height: auto !important;
+                        overflow: visible !important;
+                    `;
+                    
+                    if (data.data.length === 0) {
+                        container.innerHTML = '<div style="background: #f3f4f6; border-radius: 8px; padding: 40px; text-align: center;"><p style="color: #6b7280;">Nenhum funcionário encontrado</p></div>';
+                    } else {
+                        data.data.forEach(funcionario => {
+                            const card = criarCardFuncionario(funcionario);
+                            container.appendChild(card);
+                        });
+                        mostrarStatus(`${data.data.length} funcionário(s) carregado(s) com sucesso!`, 'sucesso');
+                    }
+                } else {
+                    mostrarStatus('Erro ao carregar funcionários: ' + (data.error || 'Resposta inválida'), 'erro');
+                }
+                
+            } catch (error) {
+                mostrarStatus('Erro de conexão: ' + error.message, 'erro');
+                console.error('Erro ao carregar funcionários:', error);
+            }
+        }
+
+        function criarCardFuncionario(funcionario) {
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: white !important;
+                border: 1px solid #e5e7eb !important;
+                border-radius: 8px !important;
+                padding: 20px !important;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                min-height: 200px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            `;
+            
+            const dataAdmissao = new Date(funcionario.hire_date).toLocaleDateString('pt-BR');
+            const salario = funcionario.salary ? `R$ ${parseFloat(funcionario.salary).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'Não informado';
+            
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                    <div>
+                        <h3 style="margin: 0; color: #111827;">${funcionario.name}</h3>
+                        <p style="margin: 5px 0; color: #6b7280; font-size: 14px;">Código: ${funcionario.employee_code}</p>
+                    </div>
+                    <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Ativo</span>
+                </div>
+                
+                <div style="space-y: 8px;">
+                    ${funcionario.email ? `<p style="margin: 8px 0; font-size: 14px;"><strong>Email:</strong> ${funcionario.email}</p>` : ''}
+                    ${funcionario.phone ? `<p style="margin: 8px 0; font-size: 14px;"><strong>Telefone:</strong> ${funcionario.phone}</p>` : ''}
+                    ${funcionario.position ? `<p style="margin: 8px 0; font-size: 14px;"><strong>Cargo:</strong> ${funcionario.position}</p>` : ''}
+                    <p style="margin: 8px 0; font-size: 14px;"><strong>Admissão:</strong> ${dataAdmissao}</p>
+                    <p style="margin: 8px 0; font-size: 14px;"><strong>Salário:</strong> ${salario}</p>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        async function cadastrarFuncionario() {
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const codigo = document.getElementById('codigo').value;
+            const dataAdmissao = document.getElementById('dataAdmissao').value;
+            const cargo = document.getElementById('cargo').value;
+            const telefone = document.getElementById('telefone').value;
+
+            if (!nome || !codigo || !dataAdmissao) {
+                mostrarStatus('Por favor, preencha pelo menos o nome, código e data de admissão.', 'erro');
+                return;
+            }
+
+            try {
+                mostrarStatus('Cadastrando funcionário...', 'info');
+
+                const response = await fetch('/api/employees', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: nome,
+                        email: email || undefined,
+                        employee_code: codigo,
+                        hire_date: dataAdmissao,
+                        position: cargo || undefined,
+                        phone: telefone || undefined
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    mostrarStatus('Funcionário cadastrado com sucesso! 🎉', 'sucesso');
+                    
+                    // Limpar formulário
+                    document.getElementById('nome').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('codigo').value = '';
+                    document.getElementById('dataAdmissao').value = '';
+                    document.getElementById('cargo').value = '';
+                    document.getElementById('telefone').value = '';
+                    document.getElementById('formulario').style.display = 'none';
+                    
+                    // Recarregar lista
+                    setTimeout(() => carregarFuncionarios(), 1000);
+                } else {
+                    mostrarStatus('Erro ao cadastrar: ' + (data.error || 'Erro desconhecido'), 'erro');
+                }
+
+            } catch (error) {
+                mostrarStatus('Erro de conexão: ' + error.message, 'erro');
+                console.error('Erro ao cadastrar funcionário:', error);
+            }
+        }
+
+        // Função de debug para verificar o estado
+        function debug() {
+            console.log('🔍 Estado do container:', document.getElementById('funcionarios'));
+            console.log('🔍 Conteúdo atual:', document.getElementById('funcionarios')?.innerHTML);
+            console.log('🔍 Estilo atual:', document.getElementById('funcionarios')?.style.cssText);
+        }
+
+        // Força o carregamento imediatamente
+        function forcarCarregamento() {
+            console.log('🚀 Forçando carregamento...');
+            const container = document.getElementById('funcionarios');
+            if (container) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px;">Carregando funcionários...</div>';
+                carregarFuncionarios();
+            } else {
+                console.error('❌ Container não encontrado!');
+            }
+        }
+
+        // Múltiplas tentativas de carregamento
+        document.addEventListener('DOMContentLoaded', forcarCarregamento);
+        window.addEventListener('load', forcarCarregamento);
+        setTimeout(forcarCarregamento, 100);
+        setTimeout(forcarCarregamento, 500);
+        setTimeout(forcarCarregamento, 1000);
+    </script>
+</body>
+</html>

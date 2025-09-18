@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema RH Pro - Thermas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #1a365d, #2d3748);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) rotate(180deg); }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 150px;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #1a365d;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #1a365d;
+            border-bottom: 3px solid #1a365d;
+        }
+        
+        .nav-tab i {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .content {
+            padding: 30px;
+            min-height: 600px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(102,126,234,0.3);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card:hover::before {
+            transform: scale(3);
+        }
+        
+        .stat-card i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .stat-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .menu-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102,126,234,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .menu-item:hover::before {
+            left: 100%;
+        }
+        
+        .menu-item:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102,126,234,0.2);
+        }
+        
+        .menu-item i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-item:hover i {
+            transform: scale(1.1);
+        }
+        
+        .menu-item h3 {
+            font-size: 1.4em;
+            color: #1a365d;
+            margin-bottom: 10px;
+        }
+        
+        .menu-item p {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1a365d;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .employee-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .employee-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .employee-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .employee-info h4 {
+            color: #1a365d;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+        
+        .employee-info p {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .container { margin: 10px; border-radius: 10px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 1.8em; }
+            .content { padding: 20px; }
+            .nav-tabs { flex-direction: column; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-building"></i> Sistema RH Pro</h1>
+            <p>Sistema Completo de Gestão de Recursos Humanos - Thermas</p>
+        </header>
+        
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </button>
+            <button class="nav-tab" onclick="showSection('employees')">
+                <i class="fas fa-users"></i>
+                Funcionários
+            </button>
+            <button class="nav-tab" onclick="showSection('departments')">
+                <i class="fas fa-building-user"></i>
+                Departamentos
+            </button>
+            <button class="nav-tab" onclick="showSection('requests')">
+                <i class="fas fa-file-alt"></i>
+                Solicitações
+            </button>
+            <button class="nav-tab" onclick="showSection('reports')">
+                <i class="fas fa-chart-bar"></i>
+                Relatórios
+            </button>
+            <button class="nav-tab" onclick="showSection('settings')">
+                <i class="fas fa-cogs"></i>
+                Configurações
+            </button>
+        </nav>
+        
+        <main class="content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <h2 style="color: #1a365d; margin-bottom: 30px; font-size: 2em;">
+                    <i class="fas fa-chart-line"></i> Dashboard Executivo
+                </h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="totalEmployees">6</h3>
+                        <p>Funcionários Ativos</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-building"></i>
+                        <h3 id="totalDepartments">6</h3>
+                        <p>Departamentos</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3 id="pendingRequests">12</h3>
+                        <p>Solicitações Pendentes</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3>R$ 125.450</h3>
+                        <p>Folha de Pagamento</p>
+                    </div>
+                </div>
+                
+                <div class="menu-grid">
+                    <div class="menu-item" onclick="showSection('employees')">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>Gestão de Funcionários</h3>
+                        <p>Cadastro, edição e controle completo de colaboradores</p>
+                    </div>
+                    <div class="menu-item" onclick="showSection('departments')">
+                        <i class="fas fa-sitemap"></i>
+                        <h3>Estrutura Organizacional</h3>
+                        <p>Gerenciamento de departamentos e hierarquia empresarial</p>
+                    </div>
+                    <div class="menu-item" onclick="showSection('requests')">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Central de Aprovações</h3>
+                        <p>Workflow de solicitações e processos de aprovação</p>
+                    </div>
+                    <div class="menu-item" onclick="showSection('reports')">
+                        <i class="fas fa-analytics"></i>
+                        <h3>Business Intelligence</h3>
+                        <p>Relatórios avançados e análises estratégicas</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Employees Section -->
+            <section id="employees" class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="color: #1a365d; font-size: 2em;">
+                        <i class="fas fa-users"></i> Gestão de Funcionários
+                    </h2>
+                    <button class="btn" onclick="showNewEmployeeForm()">
+                        <i class="fas fa-plus"></i> Novo Funcionário
+                    </button>
+                </div>
+                
+                <div id="newEmployeeForm" style="display: none; background: #f8f9fa; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+                    <h3 style="color: #1a365d; margin-bottom: 25px;">Cadastrar Novo Funcionário</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="employeeName" placeholder="Digite o nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="employeeEmail" placeholder="exemplo@empresa.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Código do Funcionário *</label>
+                            <input type="text" id="employeeCode" placeholder="EMP001">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Admissão *</label>
+                            <input type="date" id="employeeHireDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Cargo/Posição</label>
+                            <input type="text" id="employeePosition" placeholder="Ex: Analista de RH">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="tel" id="employeePhone" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button class="btn" onclick="saveEmployee()">
+                            <i class="fas fa-save"></i> Salvar Funcionário
+                        </button>
+                        <button class="btn btn-secondary" onclick="cancelEmployeeForm()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="employeesList" class="employee-grid">
+                    <!-- Funcionários serão carregados aqui -->
+                </div>
+            </section>
+            
+            <!-- Departments Section -->
+            <section id="departments" class="section">
+                <h2 style="color: #1a365d; margin-bottom: 30px; font-size: 2em;">
+                    <i class="fas fa-building-user"></i> Gestão de Departamentos
+                </h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>Novo Departamento</h3>
+                        <p>Criar novo departamento na estrutura organizacional</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-list"></i>
+                        <h3>Lista de Departamentos</h3>
+                        <p>Visualizar e gerenciar todos os departamentos</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-sitemap"></i>
+                        <h3>Organograma</h3>
+                        <p>Estrutura hierárquica visual da empresa</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3>Orçamentos</h3>
+                        <p>Controle orçamentário por departamento</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Requests Section -->
+            <section id="requests" class="section">
+                <h2 style="color: #1a365d; margin-bottom: 30px; font-size: 2em;">
+                    <i class="fas fa-file-alt"></i> Central de Solicitações
+                </h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <i class="fas fa-plus"></i>
+                        <h3>Nova Solicitação</h3>
+                        <p>Criar nova solicitação para aprovação</p>
+                        <span class="badge">Ativo</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-clock"></i>
+                        <h3>Pendentes</h3>
+                        <p>Solicitações aguardando aprovação</p>
+                        <span class="badge">12</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Aprovadas</h3>
+                        <p>Histórico de solicitações aprovadas</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-times-circle"></i>
+                        <h3>Rejeitadas</h3>
+                        <p>Solicitações que foram rejeitadas</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Reports Section -->
+            <section id="reports" class="section">
+                <h2 style="color: #1a365d; margin-bottom: 30px; font-size: 2em;">
+                    <i class="fas fa-chart-bar"></i> Centro de Relatórios
+                </h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <i class="fas fa-users"></i>
+                        <h3>Relatório de Funcionários</h3>
+                        <p>Listagem completa com filtros avançados</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Folha de Pagamento</h3>
+                        <p>Relatórios mensais de folha e benefícios</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Análise de Performance</h3>
+                        <p>KPIs e métricas de desempenho</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-file-export"></i>
+                        <h3>Exportação de Dados</h3>
+                        <p>Exportar relatórios em PDF, Excel</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <h2 style="color: #1a365d; margin-bottom: 30px; font-size: 2em;">
+                    <i class="fas fa-cogs"></i> Configurações do Sistema
+                </h2>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <i class="fas fa-user-cog"></i>
+                        <h3>Perfil de Usuário</h3>
+                        <p>Configurações da conta e preferências</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Segurança</h3>
+                        <p>Configurações de segurança e acesso</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-database"></i>
+                        <h3>Backup</h3>
+                        <p>Gerenciamento de backups do sistema</p>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-bell"></i>
+                        <h3>Notificações</h3>
+                        <p>Configurar alertas e notificações</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script>
+        console.log('🚀 Sistema RH Pro - Layout Completo Carregado!');
+        
+        // Estado da aplicação
+        let employees = [];
+        let isLoading = false;
+        
+        // Função para alternar seções
+        function showSection(sectionName) {
+            // Remover classe active de todas as abas e seções
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            
+            // Adicionar classe active na aba e seção clicada
+            event.target.closest('.nav-tab').classList.add('active');
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Carregar dados específicos da seção
+            if (sectionName === 'employees') {
+                loadEmployees();
+            } else if (sectionName === 'dashboard') {
+                loadDashboardData();
+            }
+        }
+        
+        // Carregar dados do dashboard
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/dashboard');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('totalEmployees').textContent = data.data.generalStats.active_employees;
+                        document.getElementById('totalDepartments').textContent = data.data.generalStats.active_departments;
+                        document.getElementById('pendingRequests').textContent = data.data.generalStats.pending_requests || 12;
+                    }
+                }
+            } catch (error) {
+                console.log('Usando dados mock para dashboard');
+            }
+        }
+        
+        // Carregar funcionários
+        async function loadEmployees() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const container = document.getElementById('employeesList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Carregando funcionários...</p></div>';
+            
+            try {
+                const response = await fetch('/api/employees');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success && data.data) {
+                        employees = data.data;
+                        displayEmployees(employees);
+                    } else {
+                        throw new Error('Dados inválidos');
+                    }
+                } else {
+                    throw new Error('Erro na API');
+                }
+            } catch (error) {
+                console.log('Erro ao carregar funcionários:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #6c757d;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>Não foi possível carregar os funcionários</h3>
+                        <p>Verifique a conexão com o servidor.</p>
+                        <button class="btn" onclick="loadEmployees()">
+                            <i class="fas fa-redo"></i> Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            } finally {
+                isLoading = false;
+            }
+        }
+        
+        // Exibir funcionários na interface
+        function displayEmployees(employeeList) {
+            const container = document.getElementById('employeesList');
+            
+            if (employeeList.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #6c757d; grid-column: 1 / -1;">
+                        <i class="fas fa-users" style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;"></i>
+                        <h3>Nenhum funcionário encontrado</h3>
+                        <p>Clique em "Novo Funcionário" para adicionar o primeiro colaborador.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = employeeList.map(employee => {
+                const initials = employee.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const hireDate = new Date(employee.hire_date).toLocaleDateString('pt-BR');
+                const salary = employee.salary ? `R$ ${parseFloat(employee.salary).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'Não informado';
+                
+                return `
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">${initials}</div>
+                            <div class="employee-info">
+                                <h4>${employee.name}</h4>
+                                <p><i class="fas fa-id-card"></i> ${employee.employee_code}</p>
+                            </div>
+                        </div>
+                        <div style="border-top: 1px solid #dee2e6; padding-top: 15px; margin-top: 15px;">
+                            ${employee.position ? `<p style="margin: 8px 0;"><i class="fas fa-briefcase" style="color: #667eea; margin-right: 8px;"></i><strong>Cargo:</strong> ${employee.position}</p>` : ''}
+                            ${employee.email ? `<p style="margin: 8px 0;"><i class="fas fa-envelope" style="color: #667eea; margin-right: 8px;"></i><strong>Email:</strong> ${employee.email}</p>` : ''}
+                            ${employee.phone ? `<p style="margin: 8px 0;"><i class="fas fa-phone" style="color: #667eea; margin-right: 8px;"></i><strong>Telefone:</strong> ${employee.phone}</p>` : ''}
+                            <p style="margin: 8px 0;"><i class="fas fa-calendar" style="color: #667eea; margin-right: 8px;"></i><strong>Admissão:</strong> ${hireDate}</p>
+                            <p style="margin: 8px 0;"><i class="fas fa-dollar-sign" style="color: #667eea; margin-right: 8px;"></i><strong>Salário:</strong> ${salary}</p>
+                        </div>
+                        <div style="margin-top: 15px; text-align: center;">
+                            <button class="btn" style="margin: 5px; padding: 8px 15px; font-size: 14px;" onclick="editEmployee('${employee.id}')">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-secondary" style="margin: 5px; padding: 8px 15px; font-size: 14px;" onclick="deleteEmployee('${employee.id}', '${employee.name}')">
+                                <i class="fas fa-trash"></i> Remover
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Mostrar formulário de novo funcionário
+        function showNewEmployeeForm() {
+            document.getElementById('newEmployeeForm').style.display = 'block';
+            document.getElementById('employeeName').focus();
+        }
+        
+        // Cancelar formulário de funcionário
+        function cancelEmployeeForm() {
+            document.getElementById('newEmployeeForm').style.display = 'none';
+            clearEmployeeForm();
+        }
+        
+        // Limpar formulário
+        function clearEmployeeForm() {
+            document.getElementById('employeeName').value = '';
+            document.getElementById('employeeEmail').value = '';
+            document.getElementById('employeeCode').value = '';
+            document.getElementById('employeeHireDate').value = '';
+            document.getElementById('employeePosition').value = '';
+            document.getElementById('employeePhone').value = '';
+        }
+        
+        // Salvar funcionário
+        async function saveEmployee() {
+            const name = document.getElementById('employeeName').value.trim();
+            const email = document.getElementById('employeeEmail').value.trim();
+            const code = document.getElementById('employeeCode').value.trim();
+            const hireDate = document.getElementById('employeeHireDate').value;
+            const position = document.getElementById('employeePosition').value.trim();
+            const phone = document.getElementById('employeePhone').value.trim();
+            
+            // Validação básica
+            if (!name || !code || !hireDate) {
+                showAlert('Por favor, preencha os campos obrigatórios (Nome, Código e Data de Admissão).', 'error');
+                return;
+            }
+            
+            try {
+                showAlert('Salvando funcionário...', 'info');
+                
+                const response = await fetch('/api/employees', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email: email || null,
+                        employee_code: code,
+                        hire_date: hireDate,
+                        position: position || null,
+                        phone: phone || null
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showAlert('✅ Funcionário cadastrado com sucesso!', 'success');
+                    clearEmployeeForm();
+                    cancelEmployeeForm();
+                    loadEmployees(); // Recarregar lista
+                    loadDashboardData(); // Atualizar dashboard
+                } else {
+                    throw new Error(result.error || 'Erro desconhecido');
+                }
+            } catch (error) {
+                showAlert('❌ Erro ao cadastrar funcionário: ' + error.message, 'error');
+            }
+        }
+        
+        // Mostrar alertas
+        function showAlert(message, type) {
+            // Remove alertas existentes
+            document.querySelectorAll('.alert').forEach(alert => alert.remove());
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = message;
+            
+            const form = document.getElementById('newEmployeeForm');
+            form.appendChild(alertDiv);
+            
+            // Remove automaticamente após 5 segundos
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+        
+        // Funções placeholder para edição e exclusão
+        function editEmployee(id) {
+            alert(`Funcionalidade de edição do funcionário ${id} será implementada em breve.`);
+        }
+        
+        function deleteEmployee(id, name) {
+            if (confirm(`Tem certeza que deseja remover o funcionário ${name}?`)) {
+                alert(`Funcionalidade de exclusão será implementada em breve.`);
+            }
+        }
+        
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Sistema RH Pro inicializado!');
+            loadDashboardData();
+        });
+    </script>
+</body>
+</html>

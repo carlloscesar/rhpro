@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermas - Sistema RH Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .header {
+            background: #2d3748;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-left i {
+            font-size: 20px;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        .header-right {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .header-right:hover {
+            background: #c53030;
+        }
+        
+        .main-content {
+            padding: 40px;
+            background: #f7fafc;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .module-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+        
+        .module-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #4a5568;
+        }
+        
+        .module-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .module-subtitle {
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.4;
+        }
+        
+        /* Cores específicas dos ícones */
+        .dashboard-icon { color: #f6ad55; }
+        .funcionarios-icon { color: #68d391; }
+        .requisicoes-icon { color: #fc8181; }
+        .tipos-icon { color: #a78bfa; }
+        .aprovacoes-icon { color: #4fd1c7; }
+        .relatorios-icon { color: #f6e05e; }
+        .departamentos-icon { color: #9ca3af; }
+        .cargos-icon { color: #fbb6ce; }
+        .portal-icon { color: #63b3ed; }
+        .performance-icon { color: #f6ad55; }
+        .analytics-icon { color: #fbb6ce; }
+        .automacoes-icon { color: #90cdf4; }
+        .integracoes-icon { color: #a0aec0; }
+        .compliance-icon { color: #f6ad55; }
+        .executivo-icon { color: #4fd1c7; }
+        
+        .footer-section {
+            border-top: 1px solid #e2e8f0;
+            padding: 20px 0 0 0;
+        }
+        
+        .footer-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        @media (max-width: 768px) {
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            
+            .main-content {
+                padding: 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <i class="fas fa-building"></i>
+                <div>
+                    <div class="header-title">Thermas - Sistema RH Pro</div>
+                    <div class="header-subtitle">Dashboard</div>
+                </div>
+            </div>
+            <button class="header-right">Sair</button>
+        </header>
+        
+        <main class="main-content">
+            <div class="modules-grid">
+                <!-- Linha 1 -->
+                <div class="module-card" onclick="navigateToModule('dashboard')">
+                    <div class="module-icon dashboard-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="module-title">Dashboard</div>
+                    <div class="module-subtitle">Visão geral do sistema</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('funcionarios')">
+                    <div class="module-icon funcionarios-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="module-title">Funcionários</div>
+                    <div class="module-subtitle">Gerenciar colaboradores</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('requisicoes')">
+                    <div class="module-icon requisicoes-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="module-title">Requisições</div>
+                    <div class="module-subtitle">Solicitações dos funcionários</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('tipos')">
+                    <div class="module-icon tipos-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="module-title">Tipos de Requisições</div>
+                    <div class="module-subtitle">Configurar tipos de solicitações</div>
+                </div>
+                
+                <!-- Linha 2 -->
+                <div class="module-card" onclick="navigateToModule('aprovacoes')">
+                    <div class="module-icon aprovacoes-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="module-title">Aprovações</div>
+                    <div class="module-subtitle">Gerenciar aprovações pendentes</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('relatorios')">
+                    <div class="module-icon relatorios-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="module-title">Relatórios</div>
+                    <div class="module-subtitle">Relatórios e estatísticas</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('departamentos')">
+                    <div class="module-icon departamentos-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="module-title">Departamentos</div>
+                    <div class="module-subtitle">Gerenciar departamentos</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('cargos')">
+                    <div class="module-icon cargos-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="module-title">Cargos</div>
+                    <div class="module-subtitle">Consultar CBO e cargos</div>
+                </div>
+                
+                <!-- Linha 3 -->
+                <div class="module-card" onclick="navigateToModule('portal')">
+                    <div class="module-icon portal-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="module-title">Portal do Colaborador</div>
+                    <div class="module-subtitle">Self-service para funcionários</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('performance')">
+                    <div class="module-icon performance-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="module-title">Performance</div>
+                    <div class="module-subtitle">Avaliações e desenvolvimento</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('analytics')">
+                    <div class="module-icon analytics-icon">
+                        <i class="fas fa-analytics"></i>
+                    </div>
+                    <div class="module-title">Analytics</div>
+                    <div class="module-subtitle">Business Intelligence e KPIs</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('automacoes')">
+                    <div class="module-icon automacoes-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="module-title">Automações</div>
+                    <div class="module-subtitle">Workflows e IA</div>
+                </div>
+                
+                <!-- Linha 4 -->
+                <div class="module-card" onclick="navigateToModule('integracoes')">
+                    <div class="module-icon integracoes-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <div class="module-title">Integrações</div>
+                    <div class="module-subtitle">Sistemas externos</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('compliance')">
+                    <div class="module-icon compliance-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="module-title">Compliance</div>
+                    <div class="module-subtitle">LGPD e auditoria</div>
+                </div>
+                
+                <div class="module-card" onclick="navigateToModule('executivo')">
+                    <div class="module-icon executivo-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="module-title">Centro Executivo</div>
+                    <div class="module-subtitle">Dashboard C-Level</div>
+                </div>
+                
+                <!-- Card vazio para manter o grid -->
+                <div class="module-card" style="visibility: hidden;">
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <div class="footer-title">Dashboard - Analytics RH</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        console.log('🚀 Sistema Thermas RH Pro carregado!');
+        
+        function navigateToModule(module) {
+            console.log('Navegando para módulo:', module);
+            
+            // Simulação de navegação - aqui você pode implementar a lógica real
+            switch(module) {
+                case 'funcionarios':
+                    window.location.href = '/funcionarios.html';
+                    break;
+                case 'dashboard':
+                    showAlert('Dashboard principal em desenvolvimento');
+                    break;
+                case 'requisicoes':
+                    showAlert('Módulo de Requisições em desenvolvimento');
+                    break;
+                case 'aprovacoes':
+                    showAlert('Central de Aprovações em desenvolvimento');
+                    break;
+                case 'relatorios':
+                    showAlert('Relatórios em desenvolvimento');
+                    break;
+                case 'departamentos':
+                    showAlert('Gestão de Departamentos em desenvolvimento');
+                    break;
+                case 'cargos':
+                    showAlert('Consulta CBO em desenvolvimento');
+                    break;
+                case 'portal':
+                    showAlert('Portal do Colaborador em desenvolvimento');
+                    break;
+                case 'performance':
+                    showAlert('Gestão de Performance em desenvolvimento');
+                    break;
+                case 'analytics':
+                    showAlert('Business Analytics em desenvolvimento');
+                    break;
+                case 'automacoes':
+                    showAlert('Automações e IA em desenvolvimento');
+                    break;
+                case 'integracoes':
+                    showAlert('Integrações empresariais em desenvolvimento');
+                    break;
+                case 'compliance':
+                    showAlert('Módulo de Compliance LGPD em desenvolvimento');
+                    break;
+                case 'executivo':
+                    showAlert('Centro Executivo em desenvolvimento');
+                    break;
+                case 'tipos':
+                    showAlert('Tipos de Requisições em desenvolvimento');
+                    break;
+                default:
+                    showAlert('Módulo em desenvolvimento');
+            }
+        }
+        
+        function showAlert(message) {
+            alert(message);
+        }
+        
+        // Verificar conectividade com API
+        async function checkAPI() {
+            try {
+                const response = await fetch('/api/dashboard');
+                if (response.ok) {
+                    console.log('✅ API conectada com sucesso');
+                } else {
+                    console.log('⚠️ API respondeu com erro:', response.status);
+                }
+            } catch (error) {
+                console.log('❌ Erro na conectividade da API:', error.message);
+            }
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAPI();
+        });
+    </script>
+</body>
+</html>

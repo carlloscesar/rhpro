@@ -50,3 +50,4 @@ coverage/
 **/.vite/
 **/.turbo/
 **/.agent_state_*.bin
+.agent_state_*.bin

@@ -33,3 +33,19 @@ coverage/
 .vscode/
 .idea/
 .DS_Store
+# Replit agent
+**/.agent_state_*.bin
+# (se quiser bloquear QUALQUER .bin, descomente a linha abaixo)
+# *.bin
+
+# outros caches comuns
+node_modules/
+dist/
+build/
+.next/
+.cache/
+coverage/
+**/.pnpm/
+**/.pnpm-store/
+**/.vite/
+**/.turbo/

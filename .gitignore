@@ -51,3 +51,18 @@ coverage/
 **/.turbo/
 **/.agent_state_*.bin
 .agent_state_*.bin
+# Caches / stores
+node_modules/
+dist/
+build/
+.next/
+.cache/
+coverage/
+**/.pnpm/
+**/.pnpm-store/
+**/.vite/
+**/.turbo/
+
+# Replit agent
+.agent_state_*.bin
+**/.agent_state_*.bin

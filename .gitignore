@@ -49,3 +49,4 @@ coverage/
 **/.pnpm-store/
 **/.vite/
 **/.turbo/
+**/.agent_state_*.bin

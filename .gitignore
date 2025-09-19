@@ -1,0 +1,20 @@
+# Node / JS
+node_modules/
+dist/
+build/
+.next/
+.cache/
+coverage/
+# pnpm
+**/.pnpm/
+**/.pnpm-store/
+# Vite/Turbo/etc
+**/.vite/
+**/.turbo/
+# Env
+.env
+.env.*
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
